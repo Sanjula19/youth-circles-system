@@ -1,5 +1,10 @@
-import Home from "./pages/Home";
+import { BrowserRouter } from "react-router-dom";
+import RouteMap from "./components/RouteMap";
 
 export default function App() {
-  return <Home />;
+  return (
+    <BrowserRouter>
+      <RouteMap />
+    </BrowserRouter>
+  );
 }
