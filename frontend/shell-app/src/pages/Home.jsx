@@ -1,5 +1,5 @@
-import { Typography, Space, Button } from "antd";
-import { Link } from "react-router-dom";
+import { Typography } from "antd";
+import { getRole, isLoggedIn } from "../utils/authStore";
 
 const { Title, Paragraph } = Typography;
 
@@ -9,24 +9,12 @@ export default function Home() {
       <Title level={2}>shell-app home</Title>
       <Paragraph>Ant Design Typography is working.</Paragraph>
 
-      <Paragraph style={{ marginTop: 16 }}>
-        Shell navigation (placeholders for now):
+      <Paragraph>
+        Current role: <b>{getRole()}</b>
       </Paragraph>
-
-      <Space wrap>
-        <Button type="primary">
-          <Link to="/auth">/auth</Link>
-        </Button>
-        <Button>
-          <Link to="/profile">/profile</Link>
-        </Button>
-        <Button>
-          <Link to="/survey">/survey</Link>
-        </Button>
-        <Button danger>
-          <Link to="/admin">/admin</Link>
-        </Button>
-      </Space>
+      <Paragraph>
+        Logged in: <b>{isLoggedIn() ? "YES" : "NO"}</b>
+      </Paragraph>
     </div>
   );
 }
