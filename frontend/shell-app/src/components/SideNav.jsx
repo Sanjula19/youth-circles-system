@@ -11,7 +11,7 @@ import { getRole } from "../utils/authStore";
 
 export default function SideNav() {
   const location = useLocation();
-  const role = getRole(); // reads current role from AuthStore
+  const role = getRole(); // ✅ role is read from AuthStore
 
   const items = [
     { key: "/", icon: <HomeOutlined />, label: <Link to="/">Home</Link> },
@@ -20,6 +20,7 @@ export default function SideNav() {
     { key: "/survey", icon: <FileTextOutlined />, label: <Link to="/survey">Survey</Link> },
   ];
 
+  // ✅ Only ADMIN sees Admin
   if (role === "ADMIN") {
     items.push({
       key: "/admin",
@@ -28,19 +29,9 @@ export default function SideNav() {
     });
   }
 
-  const selectedKey =
-    items.find((i) => location.pathname === i.key) ||
-    items.find((i) => i.key !== "/" && location.pathname.startsWith(i.key))
-      ? (items.find((i) => location.pathname === i.key) ||
-          items.find((i) => i.key !== "/" && location.pathname.startsWith(i.key))).key
-      : "/";
+  // Highlight current path (supports nested paths later)
+  const keys = items.map((i) => i.key).sort((a, b) => b.length - a.length);
+  const selectedKey = keys.find((k) => location.pathname === k || (k !== "/" && location.pathname.startsWith(k))) || "/";
 
-  return (
-    <Menu
-      theme="dark"
-      mode="inline"
-      selectedKeys={[selectedKey]}
-      items={items}
-    />
-  );
+  return <Menu theme="dark" mode="inline" selectedKeys={[selectedKey]} items={items} />;
 }
