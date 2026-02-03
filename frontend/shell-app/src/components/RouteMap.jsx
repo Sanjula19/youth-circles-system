@@ -22,7 +22,10 @@ export default function RouteMap() {
         }
       >
         <Route index element={<Home />} />
-         <Route
+        <Route path="/auth" element={<AuthPlaceholder />} />
+        <Route path="/profile" element={<ProfilePlaceholder />} />
+        <Route path="/survey" element={<SurveyPlaceholder />} />
+        <Route
           path="/admin"
           element={
             <RoleGate allow={["ADMIN"]}>
@@ -30,13 +33,8 @@ export default function RouteMap() {
             </RoleGate>
           }
         />
-        <Route path="/auth" element={<AuthPlaceholder />} />
-        <Route path="/profile" element={<ProfilePlaceholder />} />
-        <Route path="/survey" element={<SurveyPlaceholder />} />
-       
       </Route>
-      
-      {/* Catch-all outside AppLayout */}
+
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

@@ -1,32 +1,10 @@
-import { Routes, Route } from "react-router-dom";
+import AccessDenied from "../pages/AccessDenied";
+import { getRole } from "../utils/authStore";
 
-import AppLayout from "../layouts/AppLayout";
-import Home from "../pages/Home";
-import AuthPlaceholder from "../pages/AuthPlaceholder";
-import ProfilePlaceholder from "../pages/ProfilePlaceholder";
-import SurveyPlaceholder from "../pages/SurveyPlaceholder";
-import AdminPlaceholder from "../pages/AdminPlaceholder";
+export default function RoleGate({ allow = [], children }) {
+  const role = getRole() || "GUEST";
+  const ok = allow.includes(role);
 
-import RoleGate from "../components/RoleGate";
-
-export default function RouteMap() {
-  return (
-    <Routes>
-      <Route element={<AppLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/auth" element={<AuthPlaceholder />} />
-        <Route path="/profile" element={<ProfilePlaceholder />} />
-        <Route path="/survey" element={<SurveyPlaceholder />} />
-
-        <Route
-          path="/admin"
-          element={
-            <RoleGate allow={["ADMIN"]}>
-              <AdminPlaceholder />
-            </RoleGate>
-          }
-        />
-      </Route>
-    </Routes>
-  );
+  if (!ok) return <AccessDenied />;
+  return children;
 }
