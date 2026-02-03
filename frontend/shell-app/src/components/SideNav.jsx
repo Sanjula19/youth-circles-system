@@ -11,16 +11,20 @@ import { getRole } from "../utils/authStore";
 
 export default function SideNav() {
   const location = useLocation();
-  const role = getRole(); // ✅ role is read from AuthStore
+  const role = getRole();
+
+  const PROFILE_URL = import.meta.env.VITE_PROFILE_URL || "/profile";
 
   const items = [
     { key: "/", icon: <HomeOutlined />, label: <Link to="/">Home</Link> },
     { key: "/auth", icon: <LoginOutlined />, label: <Link to="/auth">Auth</Link> },
-    { key: "/profile", icon: <UserOutlined />, label: <Link to="/profile">Profile</Link> },
+
+    // ✅ Full navigation to profile app (dev URL if set; production path otherwise)
+    { key: "/profile", icon: <UserOutlined />, label: <a href={PROFILE_URL}>Profile</a> },
+
     { key: "/survey", icon: <FileTextOutlined />, label: <Link to="/survey">Survey</Link> },
   ];
 
-  // ✅ Only ADMIN sees Admin
   if (role === "ADMIN") {
     items.push({
       key: "/admin",
@@ -29,9 +33,9 @@ export default function SideNav() {
     });
   }
 
-  // Highlight current path (supports nested paths later)
   const keys = items.map((i) => i.key).sort((a, b) => b.length - a.length);
-  const selectedKey = keys.find((k) => location.pathname === k || (k !== "/" && location.pathname.startsWith(k))) || "/";
+  const selectedKey =
+    keys.find((k) => location.pathname === k || (k !== "/" && location.pathname.startsWith(k))) || "/";
 
   return <Menu theme="dark" mode="inline" selectedKeys={[selectedKey]} items={items} />;
 }
