@@ -4,6 +4,7 @@ import { getRole, isLoggedIn } from "../utils/authStore";
 const { Title, Paragraph } = Typography;
 
 export default function Home() {
+
   return (
     <div style={{ padding: 24 }}>
       <Title level={2}>shell-app home</Title>
