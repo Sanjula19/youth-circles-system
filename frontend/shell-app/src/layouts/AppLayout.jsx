@@ -1,16 +1,16 @@
 import { Layout, Typography, Space } from "antd";
+import { Outlet } from "react-router-dom";
 import SideNav from "../components/SideNav";
 import LogoutAction from "../components/LogoutAction";
-import { Outlet } from "react-router-dom";
 import { getRole } from "../utils/authStore";
+
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
 
 export default function AppLayout() {
-  // UI-only placeholders for now (no auth logic yet)
   const appName = "Youth Circles";
-  
-const role = getRole() || "GUEST";
+  const role = getRole() || "GUEST";
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider width={240} breakpoint="lg" collapsedWidth="0">
@@ -42,7 +42,7 @@ const role = getRole() || "GUEST";
           <LogoutAction />
         </Header>
 
-        <Content style={{ padding: 16 }}>
+        <Content style={{ padding: 16, background: "#f5f5f5" }}>
           <div
             style={{
               background: "white",

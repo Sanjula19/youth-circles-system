@@ -8,8 +8,8 @@ import SurveyPlaceholder from "../pages/SurveyPlaceholder";
 import AdminPlaceholder from "../pages/AdminPlaceholder";
 import NotFoundPage from "../pages/NotFoundPage";
 
-import RoleGate from "../components/RoleGate";
-import ErrorBoundaryView from "../components/ErrorBoundaryView";
+import RoleGate from "./RoleGate";
+import ErrorBoundaryView from "./ErrorBoundaryView";
 
 export default function RouteMap() {
   return (
@@ -22,20 +22,24 @@ export default function RouteMap() {
         }
       >
         <Route index element={<Home />} />
-        <Route path="/auth" element={<AuthPlaceholder />} />
-        <Route path="/profile" element={<ProfilePlaceholder />} />
-        <Route path="/survey" element={<SurveyPlaceholder />} />
+
+        {/* IMPORTANT: no leading "/" for nested routes */}
+        <Route path="auth" element={<AuthPlaceholder />} />
+        <Route path="profile" element={<ProfilePlaceholder />} />
+        <Route path="survey" element={<SurveyPlaceholder />} />
+
         <Route
-          path="/admin"
+          path="admin"
           element={
-            <RoleGate allow={["ADMIN"]}>
+            <RoleGate allowed={["ADMIN"]}>
               <AdminPlaceholder />
             </RoleGate>
           }
         />
-      </Route>
 
-      <Route path="*" element={<NotFoundPage />} />
+        {/* NotFound inside layout */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
     </Routes>
   );
 }

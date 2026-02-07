@@ -4,38 +4,61 @@ import {
   LoginOutlined,
   UserOutlined,
   FileTextOutlined,
-  DashboardOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
-import { Link, useLocation } from "react-router-dom";
-import { getRole } from "../utils/authStore";
 
-export default function SideNav() {
-  const location = useLocation();
-  const role = getRole();
+function goTo(app) {
+  // DEV mode: go to each app dev server port
+  if (import.meta.env.DEV) {
+    const map = {
+      shell: "http://127.0.0.1:3000/",
+      auth: "http://127.0.0.1:3001/auth/",
+      profile: "http://127.0.0.1:3002/profile/",
+      survey: "http://127.0.0.1:3003/survey/",
+      admin: "http://127.0.0.1:3004/admin/",
+    };
+    window.location.assign(map[app]);
+    return;
+  }
 
-  const PROFILE_URL = import.meta.env.VITE_PROFILE_URL || "/profile";
+  // PROD (Docker/Nginx): go by sub-path
+  const map = {
+    shell: "/",
+    auth: "/auth/",
+    profile: "/profile/",
+    survey: "/survey/",
+    admin: "/admin/",
+  };
+  window.location.assign(map[app]);
+}
 
+export default function SideNav({ role }) {
   const items = [
-    { key: "/", icon: <HomeOutlined />, label: <Link to="/">Home</Link> },
-    { key: "/auth", icon: <LoginOutlined />, label: <Link to="/auth">Auth</Link> },
-
-    // ✅ Full navigation to profile app (dev URL if set; production path otherwise)
-    { key: "/profile", icon: <UserOutlined />, label: <a href={PROFILE_URL}>Profile</a> },
-
-    { key: "/survey", icon: <FileTextOutlined />, label: <Link to="/survey">Survey</Link> },
+    { key: "home", icon: <HomeOutlined />, label: "Home", app: "shell" },
+    { key: "auth", icon: <LoginOutlined />, label: "Auth", app: "auth" },
+    { key: "profile", icon: <UserOutlined />, label: "Profile", app: "profile" },
+    { key: "survey", icon: <FileTextOutlined />, label: "Survey", app: "survey" },
   ];
 
   if (role === "ADMIN") {
     items.push({
-      key: "/admin",
-      icon: <DashboardOutlined />,
-      label: <Link to="/admin">Admin</Link>,
+      key: "admin",
+      icon: <SettingOutlined />,
+      label: "Admin",
+      app: "admin",
     });
   }
 
-  const keys = items.map((i) => i.key).sort((a, b) => b.length - a.length);
-  const selectedKey =
-    keys.find((k) => location.pathname === k || (k !== "/" && location.pathname.startsWith(k))) || "/";
-
-  return <Menu theme="dark" mode="inline" selectedKeys={[selectedKey]} items={items} />;
+  return (
+    <Menu
+      theme="dark"
+      mode="inline"
+      items={items.map((it) => ({
+        key: it.key,
+        icon: it.icon,
+        label: it.label,
+        onClick: () => goTo(it.app),
+      }))}
+    />
+  );
 }
