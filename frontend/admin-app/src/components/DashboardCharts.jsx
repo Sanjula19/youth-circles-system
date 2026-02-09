@@ -1,13 +1,19 @@
-import { Card, Typography } from "antd";
+import { Card, Empty, Typography } from "antd";
 
 const { Paragraph } = Typography;
 
 export default function DashboardCharts() {
   return (
-    <Card title="DashboardCharts (placeholder)">
-      <Paragraph type="secondary">
-        Charts will be added later. (No charts in v0.1)
+    <Card className="panelCard" title="Charts (coming soon)">
+      <Paragraph type="secondary" style={{ marginTop: 0 }}>
+        We’ll plug real charts here when backend analytics is ready.
       </Paragraph>
+
+      <div className="chartPlaceholder">
+        <Empty
+          description="No charts yet (v0.1)"
+        />
+      </div>
     </Card>
   );
 }

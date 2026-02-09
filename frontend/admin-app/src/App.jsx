@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { Layout, Menu, Result, Button, message } from "antd";
+import { ConfigProvider, Layout, Menu, Result, Button, message } from "antd";
 import {
   DashboardOutlined,
   TeamOutlined,
   BarChartOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
+
+import "./App.css";
 
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import UsersListPage from "./pages/UsersListPage";
@@ -18,38 +20,46 @@ import { admin } from "./services/admin.service";
 
 const { Sider, Content, Header } = Layout;
 
-function getRoleFromStorage() {
-  try {
-    const raw = localStorage.getItem("yc_auth_v1");
-    if (!raw) return "YOUTH";
-    const parsed = JSON.parse(raw);
-    return parsed?.role || "YOUTH";
-  } catch {
-    return "YOUTH";
-  }
+function getAuthFromStorage() {
+  const token = localStorage.getItem("auth.token");
+  const role = localStorage.getItem("auth.role");
+  return { token, role };
 }
 
 export default function App() {
-  // ✅ All hooks must be called at the top level, unconditionally
   const [screen, setScreen] = useState("dashboard");
   const [selectedUser, setSelectedUser] = useState(null);
+
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(false);
+
   const [surveys, setSurveys] = useState([]);
   const [surveysLoading, setSurveysLoading] = useState(false);
+
   const [builderMode, setBuilderMode] = useState("create");
   const [editingSurvey, setEditingSurvey] = useState(null);
 
-  // Get role - this is not a hook, so it's safe
-  const role = getRoleFromStorage();
+  const [dashError, setDashError] = useState(null);
+
+  const { token, role } = getAuthFromStorage();
   const isAdmin = role === "ADMIN";
+
+  // Redirect to /auth if not logged in (shared contract)
+  useEffect(() => {
+    if (!token) {
+      window.location.assign("/auth");
+    }
+  }, [token]);
 
   const reloadUsers = async () => {
     if (!isAdmin) return;
     setUsersLoading(true);
+    setDashError(null);
     try {
       const data = await admin.listUsers();
       setUsers(data);
+    } catch (e) {
+      setDashError(e);
     } finally {
       setUsersLoading(false);
     }
@@ -58,31 +68,65 @@ export default function App() {
   const reloadSurveys = async () => {
     if (!isAdmin) return;
     setSurveysLoading(true);
+    setDashError(null);
     try {
       const data = await admin.surveysCRUD.list();
       setSurveys(data);
+    } catch (e) {
+      setDashError(e);
     } finally {
       setSurveysLoading(false);
     }
   };
 
-  // ✅ useEffect is always called (hooks rules satisfied)
+  const reloadDashboard = async () => {
+    await Promise.all([reloadUsers(), reloadSurveys()]);
+  };
+
   useEffect(() => {
     if (!isAdmin) return;
-    reloadUsers();
-    reloadSurveys();
+    reloadDashboard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin]);
 
-  // ✅ useMemo is always called (hooks rules satisfied)
   const stats = useMemo(() => {
-    if (!isAdmin) return { totalUsers: 0, activeUsers: 0, totalSurveys: 0 };
+    if (!isAdmin) return null;
+
     const totalUsers = users.length;
     const activeUsers = users.filter((u) => u.status === "ACTIVE").length;
+
+    const totalYouth = users.filter((u) => u.role === "YOUTH").length;
+    const totalAgents = users.filter((u) => u.role === "AGENT").length;
+
     const totalSurveys = surveys.length;
-    return { totalUsers, activeUsers, totalSurveys };
+
+    // mock-only until backend:
+    const totalYouthCircles = 12;
+    const totalSubmissions = 128;
+
+    return {
+      totalUsers,
+      activeUsers,
+      totalYouth,
+      totalAgents,
+      totalYouthCircles,
+      totalSurveys,
+      totalSubmissions,
+    };
   }, [users, surveys, isAdmin]);
 
-  // ✅ Early return AFTER all hooks have been called
+  // Access rules (after hooks)
+  if (!token) {
+    return (
+      <Result
+        status="403"
+        title="Login required"
+        subTitle="Redirecting to /auth..."
+        extra={<Button type="primary" onClick={() => window.location.assign("/auth")}>Go to /auth</Button>}
+      />
+    );
+  }
+
   if (!isAdmin) {
     return (
       <Result
@@ -154,78 +198,109 @@ export default function App() {
     { key: "surveys", icon: <FileTextOutlined />, label: "Survey Management" },
   ];
 
+  const selectedKey =
+    screen === "userDetail" ? "users" : screen === "surveyBuilder" ? "surveys" : screen;
+
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider width={240} breakpoint="lg" collapsedWidth="0">
-        <div style={{ padding: 16, color: "white", fontWeight: 600 }}>admin-app</div>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#b91c1c",
+          borderRadius: 10,
+          fontFamily:
+            'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"',
+        },
+      }}
+    >
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider width={240} breakpoint="lg" collapsedWidth="0" className="adminSider">
+          <div className="brandBlock">
+            <div className="brandMark">NY</div>
+            <div className="brandText">
+              <div className="brandTitle">NYSC Admin</div>
+              <div className="brandSub">Control Panel</div>
+            </div>
+          </div>
 
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[screen === "userDetail" ? "users" : screen === "surveyBuilder" ? "surveys" : screen]}
-          items={menuItems}
-          onClick={({ key }) => {
-            setSelectedUser(null);
-            setEditingSurvey(null);
-            setScreen(key);
-          }}
-        />
-      </Sider>
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[selectedKey]}
+            items={menuItems}
+            onClick={({ key }) => {
+              setSelectedUser(null);
+              setEditingSurvey(null);
+              setScreen(key);
+            }}
+          />
+        </Sider>
 
-      <Layout>
-        <Header style={{ background: "white", borderBottom: "1px solid #f0f0f0" }}>
-          <div style={{ fontWeight: 600 }}>Role: ADMIN</div>
-        </Header>
+        <Layout>
+          <Header className="adminHeader">
+            <div className="adminHeaderRow">
+              <div className="adminHeaderTitle">Admin</div>
+              <div className="adminHeaderMeta">Role: ADMIN</div>
+            </div>
+          </Header>
 
-        <Content style={{ background: "#f5f5f5" }}>
-          {screen === "dashboard" && <AdminDashboardPage stats={stats} />}
+          <Content className="adminContent">
+            {screen === "dashboard" && (
+              <AdminDashboardPage
+                stats={stats}
+                loading={usersLoading || surveysLoading}
+                error={dashError}
+                onRetry={reloadDashboard}
+                onNavigate={setScreen}
+              />
+            )}
 
-          {screen === "users" && (
-            <UsersListPage
-              users={users}
-              loading={usersLoading}
-              onOpenUser={(u) => {
-                setSelectedUser(u);
-                setScreen("userDetail");
-              }}
-              onActivate={onActivateUser}
-              onDeactivate={onDeactivateUser}
-            />
-          )}
+            {screen === "users" && (
+              <UsersListPage
+                users={users}
+                loading={usersLoading}
+                onOpenUser={(u) => {
+                  setSelectedUser(u);
+                  setScreen("userDetail");
+                }}
+                onActivate={onActivateUser}
+                onDeactivate={onDeactivateUser}
+              />
+            )}
 
-          {screen === "userDetail" && (
-            <UserDetailPage
-              user={selectedUser}
-              onBack={() => {
-                setSelectedUser(null);
-                setScreen("users");
-              }}
-            />
-          )}
+            {screen === "userDetail" && (
+              <UserDetailPage
+                user={selectedUser}
+                onBack={() => {
+                  setSelectedUser(null);
+                  setScreen("users");
+                }}
+              />
+            )}
 
-          {screen === "youthCircles" && <YouthCirclesStatsPage />}
+            {screen === "youthCircles" && <YouthCirclesStatsPage />}
 
-          {screen === "surveys" && (
-            <SurveyManageListPage
-              surveys={surveys}
-              loading={surveysLoading}
-              onCreateNew={onCreateSurvey}
-              onEdit={onEditSurvey}
-              onActivate={onActivateSurvey}
-              onDeactivate={onDeactivateSurvey}
-            />
-          )}
+            {screen === "surveys" && (
+              <SurveyManageListPage
+                surveys={surveys}
+                loading={surveysLoading}
+                onCreateNew={onCreateSurvey}
+                onEdit={onEditSurvey}
+                onActivate={onActivateSurvey}
+                onDeactivate={onDeactivateSurvey}
+              />
+            )}
 
-          {screen === "surveyBuilder" && (
-            <SurveyBuilderPage
-              mode={builderMode}
-              survey={editingSurvey}
-              onSave={onSaveSurvey}
-              onCancel={() => setScreen("surveys")}
-            />
-          )}
-        </Content>
+            {screen === "surveyBuilder" && (
+              <SurveyBuilderPage
+                mode={builderMode}
+                survey={editingSurvey}
+                onSave={onSaveSurvey}
+                onCancel={() => setScreen("surveys")}
+              />
+            )}
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </ConfigProvider>
   );
 }

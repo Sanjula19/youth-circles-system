@@ -1,0 +1,11 @@
+## Admin App UI Pattern
+- Use a consistent `PageShell`:
+  - max width ~1180px
+  - page title + subtitle + optional header actions (e.g., Refresh)
+- Use panel cards with soft border + subtle shadow.
+- Primary color for admin matches NYSC red: `#b91c1c`.
+- Always support states:
+  - Loading: Skeleton
+  - Error: Alert with Retry
+  - Empty: Empty component
+  - Success: content layout with responsive grid
