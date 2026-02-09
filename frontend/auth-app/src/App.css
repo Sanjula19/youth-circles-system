@@ -1,42 +1,214 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Page shell */
+.authWrap {
+  min-height: 100vh;
+  padding: 34px 16px 44px;
+  background:
+    radial-gradient(1100px 520px at 50% 0%, rgba(185, 28, 28, 0.10), transparent 60%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.00)),
+    #f4f6fb;
+  display: flex;
+  justify-content: center;
+}
+
+.authInner {
+  width: min(920px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.authHeader {
   text-align: center;
+  margin-bottom: 18px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.authMark {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #b91c1c;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  box-shadow: 0 10px 22px rgba(185, 28, 28, 0.20);
+  margin: 0 auto 10px;
+  user-select: none;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.authAppTitle {
+  margin: 0 !important;
+}
+
+.authAppSubtitle {
+  margin: 4px 0 0 !important;
+  opacity: 0.9;
+}
+
+.authBottom {
+  margin-top: 18px;
+  opacity: 0.9;
+}
+
+.backHome {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.bottomInline {
+  color: rgba(15, 23, 42, 0.65);
+}
+.bottomInline a {
+  color: #b91c1c;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+/* Card */
+.authCard2 {
+  width: min(560px, 100%);
+  border-radius: 14px !important;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow:
+    0 10px 26px rgba(15, 23, 42, 0.08),
+    0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+.cardHead {
+  margin-bottom: 14px;
+}
+.cardTitle {
+  font-size: 18px;
+  font-weight: 750;
+  color: #0f172a;
+}
+.cardSub {
+  margin-top: 2px;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.authAlert {
+  margin-bottom: 14px;
+}
+
+.primaryBtn {
+  font-weight: 700;
+  border-radius: 10px !important;
+}
+
+.cardFooterLink {
+  margin-top: 14px;
+  text-align: center;
+  color: rgba(15, 23, 42, 0.65);
+}
+.cardFooterLink a {
+  color: #b91c1c;
+  font-weight: 650;
+  cursor: pointer;
+}
+.dot {
+  margin: 0 10px;
+  opacity: 0.45;
+}
+
+/* Wizard */
+.wizardTop {
+  margin-bottom: 14px;
+}
+.wizardTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.wizardStepText {
+  font-weight: 650;
+  color: rgba(15, 23, 42, 0.85);
+}
+
+.wizardHead {
+  margin-bottom: 12px;
+}
+.wizardTitle {
+  margin: 0 !important;
+}
+.wizardSub {
+  margin: 4px 0 0 !important;
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.wizardActions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+/* Interest cards (Step 3) */
+.interestGrid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.interestCard {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.interestCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+  border-color: rgba(185, 28, 28, 0.30);
+}
+
+.interestCard.isSelected {
+  border-color: rgba(185, 28, 28, 0.55);
+  box-shadow: 0 12px 26px rgba(185, 28, 28, 0.12);
+}
+
+.interestIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(185, 28, 28, 0.10);
+  font-size: 18px;
+}
+
+.interestTitle {
+  font-weight: 750;
+  color: #0f172a;
+}
+.interestMeta {
+  margin-top: 2px;
+  color: rgba(15, 23, 42, 0.62);
+  font-size: 12.5px;
+}
+
+/* Mobile */
+@media (max-width: 620px) {
+  .grid2 {
+    grid-template-columns: 1fr;
   }
-  to {
-    transform: rotate(360deg);
+  .interestGrid2 {
+    grid-template-columns: 1fr;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

@@ -1,16 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Result } from "antd";
 
-export default function AuthSuccessRedirect({ title = "Success", subtitle = "Redirecting..." }) {
-  useEffect(() => {
-    const shellUrl = import.meta.env.VITE_SHELL_URL || "/";
+export default function AuthSuccessRedirect({
+  title = "Success",
+  subtitle = "Redirecting...",
+  delayMs = 900,
+}) {
+  const shellUrl = useMemo(() => import.meta.env.VITE_SHELL_URL || "/", []);
 
+  useEffect(() => {
     const t = setTimeout(() => {
       window.location.assign(shellUrl);
-    }, 600);
-
+    }, delayMs);
     return () => clearTimeout(t);
-  }, []);
+  }, [delayMs, shellUrl]);
 
   return <Result status="success" title={title} subTitle={subtitle} />;
 }

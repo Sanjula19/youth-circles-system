@@ -1,4 +1,5 @@
-const STORAGE_KEY = "yc_auth_v1";
+const TOKEN_KEY = "auth.token";
+const ROLE_KEY = "auth.role";
 const ALLOWED_ROLES = ["YOUTH", "AGENT", "ADMIN"];
 
 export function TokenSave(token, role) {
@@ -9,6 +10,19 @@ export function TokenSave(token, role) {
     throw new Error("TokenSave: invalid role");
   }
 
-  const payload = { token: token.trim(), role };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  localStorage.setItem(TOKEN_KEY, token.trim());
+  localStorage.setItem(ROLE_KEY, role);
+}
+
+export function TokenClear() {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(ROLE_KEY);
+}
+
+export function getAuthToken() {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function getAuthRole() {
+  return localStorage.getItem(ROLE_KEY);
 }
