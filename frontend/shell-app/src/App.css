@@ -1,42 +1,133 @@
-#root {
-  max-width: 1280px;
+/* Layout */
+.shellSider {
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+.shellBrand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+}
+
+.shellLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #c41b1b 0%, #ff4d4f 100%);
+  color: white;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  letter-spacing: 0.5px;
+}
+
+.shellBrandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.shellBrandTitle {
+  color: white !important;
+  font-size: 14px;
+}
+
+.shellBrandSub {
+  color: rgba(255,255,255,0.65) !important;
+  font-size: 12px;
+}
+
+.shellHeader {
+  background: #fff !important;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.shellHeaderTitle {
+  font-weight: 700;
+}
+
+.shellHeaderRight {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.shellContent {
+  background: #f6f7fb;
+  padding: 16px;
+}
+
+.shellContainer {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.roleTag {
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.statusTag {
+  color: rgba(0,0,0,0.65);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Pages */
+.pageStack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.card {
-  padding: 2em;
+.softCard {
+  border-radius: 14px;
+  box-shadow: 0 8px 26px rgba(16, 24, 40, 0.06);
 }
 
-.read-the-docs {
-  color: #888;
+.iconBadge {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(196, 27, 27, 0.12);
+  color: #c41b1b;
+  font-size: 18px;
+}
+
+/* Home hero */
+.heroWrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: white;
+  border: 1px solid #f0f0f0;
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(1200px 400px at 20% 0%, rgba(196,27,27,0.15), transparent 60%),
+              radial-gradient(900px 400px at 80% 10%, rgba(255,77,79,0.12), transparent 55%),
+              linear-gradient(180deg, rgba(246,247,251,0.2), rgba(246,247,251,0.9));
+}
+
+.heroContent {
+  position: relative;
+  padding: 18px;
+}
+
+.actionBtn {
+  height: 44px;
+  justify-content: flex-start;
+}
+
+/* Helpful little hint text */
+.tinyHint {
+  display: block;
+  margin-top: 10px;
 }
